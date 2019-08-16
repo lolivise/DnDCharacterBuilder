@@ -1,0 +1,286 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <title></title>
+        <script language="JavaScript" type="text/JavaScript">
+        function init(){
+            //alert(window.location.href);
+            initStatus = true;
+            abType = ["charCON","charDEX","charSTR","charCHA","charINT","charWIS"];
+            userABPoint = [0,0,0,0,0,0];
+            raceABPoint = [0,0,0,0,0,0];
+            setRaceList();
+        }
+            
+        //===============================================Racial=============================================
+            
+        function setRaceList(){
+            req = null;
+            req = new XMLHttpRequest();
+            req.open("POST", "../DnDBuilder/getRaceList", true);
+            req.onreadystatechange = onRaceListComplete;
+            req.send();
+        }
+            
+        //Set the Racial
+        function onRaceListComplete(){
+            if(req.readyState == 4){
+                if(req.status == 200){
+                    retVal = JSON.parse(req.responseText);
+                    var ii;
+                    for (ii =0; ii < retVal.length ; ii ++)
+                    {
+                        racelist.options[ii]=new Option(retVal[ii]);
+                    }
+                    setClassList();
+                }else{
+                    alert("Fail to get race list");
+                }
+            }
+        }
+
+        //================================================Classes=============================================
+        //get class list
+        function setClassList(){
+            req = null;
+            req = new XMLHttpRequest();
+            req.open("POST", "../DnDBuilder/getClassList", true);
+            req.onreadystatechange = onClassListComplete;
+            req.send();
+        }
+        
+        //Set the list of classes
+        function onClassListComplete(){
+            if(req.readyState == 4){
+                if(req.status == 200){
+                    retVal = JSON.parse(req.responseText);
+                    var ii;
+                    for (ii =0; ii < retVal.length ; ii ++)
+                    {
+                        classlist.options[ii]=new Option(retVal[ii]);
+                    }
+                    maxLevel();
+                }else{
+                    alert("Fail to get classes");
+                }
+            }
+        }
+            
+        //=======================================Spell Cast=============================================
+        function setSpellCaster(){
+            classSelected = document.getElementById("classlist").value;
+            
+            req = null;
+            req = new XMLHttpRequest();
+            req.open("POST", "../DnDBuilder/isSpellCaster", true);
+            req.setRequestHeader("Content-type", "application/json");
+            req.onreadystatechange = onSpellCastComplete;
+            var msg = {classes:classSelected}
+            req.send(JSON.stringify(msg));
+        }
+            
+        function onSpellCastComplete(){
+            if(req.readyState == 4){
+                if(req.status == 200){
+                   retVal = JSON.parse(req.responseText);
+                   if(retVal){
+                        document.getElementById("Spellcaster").value = "YES";
+                   }else{
+                        document.getElementById("Spellcaster").value = "NO";
+                   }
+                getHitDie();
+                }else{
+                    alert("Fail to get Spell Caster");
+               }
+            }
+        }
+            
+        //===============================================Hit Die===============================================
+        function getHitDie(){
+            req = null;
+            req = new XMLHttpRequest();
+            req.open("POST", "../DnDBuilder/getHitDie", true);
+            req.setRequestHeader("Content-type", "application/json");
+            req.onreadystatechange = onHitDieComplete;
+            var msg = {classes:classSelected}
+            req.send(JSON.stringify(msg));
+        }
+            
+        function onHitDieComplete(){
+            if(req.readyState == 4){
+                if(req.status == 200){
+                    retVal = JSON.parse(req.responseText);
+                    hitdie = retVal;
+            
+                    //Complete initial proccess
+                    if(initStatus){
+                        setRacialBonus();
+                        initStatus = false;
+                    }else{
+                        setHP();
+                    }
+                }else{
+                    alert("Fail to get HP");
+               }
+            }
+        }    
+        
+        
+        //===============================================MAX LEVEL=============================================
+        //get the max level
+        function maxLevel(){
+            req = null;
+            req = new XMLHttpRequest();
+            req.open("POST", "../DnDBuilder/getMaxLevel", true);
+            req.onreadystatechange = onMaxLevelComplete;
+            req.send();
+        }
+            
+        //Set the Max level
+        function onMaxLevelComplete(){
+            if(req.readyState == 4){
+                if(req.status == 200){
+                    retVal = JSON.parse(req.responseText);
+                    var ii;
+                    for (ii =0; ii < retVal ; ii ++)
+                    {
+                        level.options[ii]=new Option(ii +1);
+                    }
+                    levelNum = parseInt(document.getElementById("level").value);
+                    setSpellCaster();
+                }else{
+                    alert("Fail to get maximum level");
+                }
+            }
+        }
+            
+        //===============================================LEVEL Change=============================================
+        function levelChange(){
+            levelNum = parseInt(document.getElementById("level").value);
+            setHP();
+        }
+            
+        //===============================================Racial Bonus============================================
+        function setRacialBonus(){
+            raceSelected = document.getElementById("racelist").value;
+            
+            req = null;
+            req = new XMLHttpRequest();
+            req.open("POST", "../DnDBuilder/getRacialBonus", true);
+            req.setRequestHeader("Content-type", "application/json");
+            req.onreadystatechange = onRacialBonusComplete;
+            var msg = {races:raceSelected}
+            req.send(JSON.stringify(msg));
+        }
+            
+        function onRacialBonusComplete(){
+            if(req.readyState == 4){
+                if(req.status == 200){
+                    retVal = JSON.parse(req.responseText);
+                    var ii;
+                    for (ii =0; ii < 6 ; ii ++)
+                    { 
+                        raceABPoint[ii] = retVal[ii];
+                    }
+                    setHP();
+                }else{
+                    alert("Fail to get Racial Bonus");
+                }
+            }
+        }
+            
+        //=============================================Ability Score=============================================
+        function incAB(index){
+            var pointNum = parseInt(document.getElementById("point").value);
+            alert(abType[index]);
+            
+        }
+            
+            
+        //===============================================Hit Point================================================
+        function setHP(){
+            var hp =  levelNum * hitdie + raceABPoint[0] + userABPoint[0];
+            document.getElementById("charHP").value = ""+hp;
+        }
+        </script>
+</head>
+<body onload="init();">
+   <form>
+            <h1>Create Hero</h1>
+            <button type="button" id="btn_create" onclick="onCreate();">create</button>
+            <br><br>
+            <a>Name: </a>
+            <input type="text" id = "charName"/>
+            <br><br>
+            <a>Age(1-500):</a>
+            <input type="text" id = "charAge" maxlength="3" size="3"/>
+            
+            <a>&nbsp;&nbsp;Gender:</a>
+            <input type="text" id = "charGender" size="6"/>
+            
+            <br><br>
+            
+            <a>Biography:</a>
+            <br>
+            <textarea style="width: 300px; height: 100px; overflow-y: scroll;" id="biography"></textarea>
+            <br><br>
+            
+           
+            <a>Race:</a>
+            <select id="racelist" onchange="setRacialBonus();"></select>
+            
+            <a>&nbsp;&nbsp;&nbsp;&nbsp;Class:</a>
+            <select id="classlist" onchange="setSpellCaster();"></select>
+            
+            
+            <a>&nbsp;&nbsp;&nbsp;&nbsp;Level:</a>
+            <select id="level" onchange="levelChange();"></select>
+            
+            <br><br>
+            
+            
+            <a>Hit Points:</a>
+            <input type="text" id = "charHP" disabled="true"/>
+            
+            
+            <a>&nbsp;&nbsp;Spellcaster:</a>
+            <input type="text" disabled="true" id = "Spellcaster"/>
+            
+            <br><br>
+            
+            <a>Ability Scores:</a>
+            <a>&nbsp;&nbsp;point:</a>
+            <input type="text" disabled="true" id = "point" value="20" style="width: 20px;" />
+            <br>
+            <a>CON: </a>
+            
+            <input type="text" disabled="true" id = "charCON" style="width: 20px;"/>
+            <button type="button" onclick="incAB(0);">+</button>
+            <br>
+            <a>DEX: </a>
+            
+            <input type="text" disabled="true" id = "charDEX" style="width: 20px;"/>
+            
+            <br>
+            <a>STR: </a>
+            <input type="text" disabled="true" id = "charSTR" style="width: 20px;"/>
+            
+            <br>
+            <a>CHA: </a>
+            
+            <input type="text" disabled="true" id = "charCHA" style="width: 20px;"/>
+            
+            <br>
+            <a>INT: </a>
+            
+            <input type="text" disabled="true" id = "charINT" style="width: 20px;"/>
+            
+            <br>
+            <a>WIS: </a>
+            
+            <input type="text" disabled="true" id = "charWIS" style="width: 20px;"/>
+            
+          </form>  
+</body>
+</html>

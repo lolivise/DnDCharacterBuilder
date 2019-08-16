@@ -1,0 +1,15 @@
+/home/dc-hung/Projects/18705665_ChiCheHung/DnDBuilder/DnDBuilder/bin/DnDBuilder.dll
+/home/dc-hung/Projects/18705665_ChiCheHung/DnDBuilder/DnDBuilder/bin/DnDBuilder.pdb
+/home/dc-hung/Projects/18705665_ChiCheHung/DnDBuilder/DnDBuilder/bin/Newtonsoft.Json.dll
+/home/dc-hung/Projects/18705665_ChiCheHung/DnDBuilder/DnDBuilder/bin/System.Net.Http.Formatting.dll
+/home/dc-hung/Projects/18705665_ChiCheHung/DnDBuilder/DnDBuilder/bin/System.Web.Http.dll
+/home/dc-hung/Projects/18705665_ChiCheHung/DnDBuilder/DnDBuilder/bin/System.Web.Http.WebHost.dll
+/home/dc-hung/Projects/18705665_ChiCheHung/DnDBuilder/DnDBuilder/bin/System.Net.Http.Formatting.xml
+/home/dc-hung/Projects/18705665_ChiCheHung/DnDBuilder/DnDBuilder/bin/System.Web.Http.xml
+/home/dc-hung/Projects/18705665_ChiCheHung/DnDBuilder/DnDBuilder/bin/System.Web.Http.WebHost.xml
+/home/dc-hung/Projects/18705665_ChiCheHung/DnDBuilder/DnDBuilder/bin/Newtonsoft.Json.xml
+/home/dc-hung/Projects/18705665_ChiCheHung/DnDBuilder/DnDBuilder/obj/Debug/DnDBuilder.csprojAssemblyReference.cache
+/home/dc-hung/Projects/18705665_ChiCheHung/DnDBuilder/DnDBuilder/obj/Debug/DnDBuilder.csproj.CoreCompileInputs.cache
+/home/dc-hung/Projects/18705665_ChiCheHung/DnDBuilder/DnDBuilder/obj/Debug/DnDBuilder.csproj.CopyComplete
+/home/dc-hung/Projects/18705665_ChiCheHung/DnDBuilder/DnDBuilder/obj/Debug/DnDBuilder.dll
+/home/dc-hung/Projects/18705665_ChiCheHung/DnDBuilder/DnDBuilder/obj/Debug/DnDBuilder.pdb

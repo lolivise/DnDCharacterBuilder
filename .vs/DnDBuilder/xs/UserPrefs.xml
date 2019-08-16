@@ -1,0 +1,38 @@
+﻿<Properties StartupConfiguration="{45C04BA3-A108-44F0-94D8-F41F4D5E3777}|">
+  <MonoDevelop.Ide.Workbench ActiveDocument="DnDBuilder/Controllers/Validation.cs">
+    <Files>
+      <File FileName="DnDBuilder/Controllers/Validation.cs" Line="80" Column="52" />
+      <File FileName="DnDBuilder/Controllers/DBHandler.cs" Line="118" Column="49" />
+      <File FileName="DnDBuilder/Client/HeroListPage.html" Line="16" Column="56" />
+      <File FileName="DnDBuilder/Client/ViewHeroPage.html" Line="439" Column="39" />
+      <File FileName="DnDBuilder/Controllers/DataStructure.cs" Line="14" Column="39" />
+      <File FileName="DnDBuilder/Controllers/DnDBuilderController.cs" Line="26" Column="14" />
+      <File FileName="DnDBuilder/Controllers/Races.cs" Line="1" Column="1" />
+      <File FileName="DnDBuilder/Client/CreateHeroPage.html" Line="169" Column="29" />
+      <File FileName="DnDBuilder/Controllers/DnD5eAPI.cs" Line="66" Column="16" />
+      <File FileName="DnDBuilder/Controllers/Classes.cs" Line="1" Column="1" />
+    </Files>
+  </MonoDevelop.Ide.Workbench>
+  <MonoDevelop.Ide.DebuggingService.PinnedWatches />
+  <MonoDevelop.Ide.ItemProperties.DnDBuilder PreferredExecutionTarget="firefox" />
+  <MonoDevelop.Ide.Workspace ActiveConfiguration="Debug" />
+  <MonoDevelop.Ide.DebuggingService.Breakpoints>
+    <BreakpointStore>
+      <Breakpoint file="/home/dc-hung/Projects/18705665_ChiCheHung/DnDBuilder/DnDBuilder/App_Start/WebApiConfig.cs" relfile="DnDBuilder/App_Start/WebApiConfig.cs" line="71" column="1" />
+      <Breakpoint file="/home/dc-hung/Projects/18705665_ChiCheHung/DnDBuilder/DnDBuilder/App_Start/WebApiConfig.cs" relfile="DnDBuilder/App_Start/WebApiConfig.cs" line="72" column="1" />
+      <Breakpoint file="/home/dc-hung/Projects/18705665_ChiCheHung/DnDBuilder/DnDBuilder/App_Start/WebApiConfig.cs" relfile="DnDBuilder/App_Start/WebApiConfig.cs" line="64" column="1" />
+      <Breakpoint file="/home/dc-hung/Projects/18705665_ChiCheHung/DnDBuilder/DnDBuilder/App_Start/WebApiConfig.cs" relfile="DnDBuilder/App_Start/WebApiConfig.cs" line="63" column="1" />
+      <Breakpoint file="/home/dc-hung/Projects/18705665_ChiCheHung/DnDBuilder/DnDBuilder/App_Start/WebApiConfig.cs" relfile="DnDBuilder/App_Start/WebApiConfig.cs" line="62" column="1" />
+      <Breakpoint file="/home/dc-hung/Projects/18705665_ChiCheHung/DnDBuilder/DnDBuilder/App_Start/WebApiConfig.cs" relfile="DnDBuilder/App_Start/WebApiConfig.cs" line="73" column="1" />
+      <Breakpoint file="/home/dc-hung/Projects/18705665_ChiCheHung/DnDBuilder/DnDBuilder/App_Start/WebApiConfig.cs" relfile="DnDBuilder/App_Start/WebApiConfig.cs" line="74" column="1" />
+      <Breakpoint file="/home/dc-hung/Projects/18705665_ChiCheHung/DnDBuilder/DnDBuilder/App_Start/WebApiConfig.cs" relfile="DnDBuilder/App_Start/WebApiConfig.cs" line="75" column="1" />
+      <Breakpoint file="/home/dc-hung/Projects/18705665_ChiCheHung/DnDBuilder/DnDBuilder/App_Start/WebApiConfig.cs" relfile="DnDBuilder/App_Start/WebApiConfig.cs" line="78" column="1" />
+      <Breakpoint file="/home/dc-hung/Projects/18705665_ChiCheHung/DnDBuilder/DnDBuilder/App_Start/WebApiConfig.cs" relfile="DnDBuilder/App_Start/WebApiConfig.cs" line="79" column="1" />
+      <Breakpoint file="/home/dc-hung/Projects/18705665_ChiCheHung/DnDBuilder/DnDBuilder/App_Start/WebApiConfig.cs" relfile="DnDBuilder/App_Start/WebApiConfig.cs" line="80" column="1" />
+      <Breakpoint file="/home/dc-hung/Projects/18705665_ChiCheHung/DnDBuilder/DnDBuilder/Controllers/Validation.cs" relfile="DnDBuilder/Controllers/Validation.cs" line="74" column="1" />
+      <Breakpoint file="/home/dc-hung/Projects/18705665_ChiCheHung/DnDBuilder/DnDBuilder/Client/CreateHeroPage.html" relfile="DnDBuilder/Client/CreateHeroPage.html" line="169" column="28" />
+      <Breakpoint file="/home/dc-hung/Projects/18705665_ChiCheHung/DnDBuilder/DnDBuilder/Client/CreateHeroPage.html" relfile="DnDBuilder/Client/CreateHeroPage.html" line="305" column="1" />
+    </BreakpointStore>
+  </MonoDevelop.Ide.DebuggingService.Breakpoints>
+  <MultiItemStartupConfigurations />
+</Properties>

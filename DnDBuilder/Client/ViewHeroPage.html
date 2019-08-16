@@ -1,0 +1,510 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <title></title>
+        <script language="JavaScript" type="text/JavaScript">
+        function init(){
+            initStatus = true;
+            abType = ["charCON","charDEX","charSTR","charCHA","charINT","charWIS"];
+            raceABPoint = [0,0,0,0,0,0];
+            setup();
+            var sum = 0;
+            for(var i =0; i<userABPoint.length; i++){
+                sum += userABPoint[i];
+            }
+            
+            document.getElementById("point").value = (20 - sum);
+            setRaceList();
+        }
+            
+        //=======================================Setup=================
+        function setup(){
+            charName.value = charProperty.name;
+            charAge.value = charProperty.age;
+            biography.value = charProperty.bio;
+            if((charProperty.gender !== "Male")&&(charProperty.gender !== "Female")){
+                charGender.value = "Other";
+                otherGend.value = charProperty.gender;
+                otherGend.disabled = false;
+            }else{
+                charGender.value = charProperty.gender;
+            }
+            
+            userABPoint = charProperty.userAB;
+        }
+            
+        //=======================================Get Current Character======================================
+        function getCharInfo(){
+            var chName = localStorage.getItem('name');
+            req = null;
+            req = new XMLHttpRequest();
+            req.open("POST", "../DnDBuilder/getCharInfo", true);
+            req.setRequestHeader("Content-type", "application/json");
+            req.onreadystatechange = onCharInfoComplete;
+            var msg = {chName:chName};
+            req.send(JSON.stringify(msg));
+        }
+            
+        //Get character info
+        function onCharInfoComplete(){
+            if(req.readyState == 4){
+                if(req.status == 200){
+                    retVal = JSON.parse(req.responseText);
+                    if(retVal.hasOwnProperty("error_Msg")){
+                        alert(retVal.error_msg);
+                    }else{
+                        charProperty = retVal;
+                        init();
+                    }
+                }else{
+                    alert("Fail to get character info");
+                }
+            }
+        }   
+        
+        //===============================================Racial=============================================
+            
+        function setRaceList(){
+            req = null;
+            req = new XMLHttpRequest();
+            req.open("POST", "../DnDBuilder/getRaceList", true);
+            req.onreadystatechange = onRaceListComplete;
+            req.send();
+        }
+            
+        //Set the Racial
+        function onRaceListComplete(){
+            if(req.readyState == 4){
+                if(req.status == 200){
+                    retVal = JSON.parse(req.responseText);
+                    if(retVal !== null){
+                        var ii;
+                        for (ii =0; ii < retVal.length ; ii ++)
+                        {
+                            racelist.options[ii]=new Option(retVal[ii]);
+                        }
+                        document.getElementById("racelist").value = charProperty.races
+                        raceSelected = document.getElementById("racelist").value;
+                        setClassList();
+                    }else{
+                        alert("Fail to get race list")
+                    }
+                }else{
+                    alert("race list request fail.");
+                }
+            }
+        }
+
+        //================================================Classes=============================================
+        //get class list
+        function setClassList(){
+            req = null;
+            req = new XMLHttpRequest();
+            req.open("POST", "../DnDBuilder/getClassList", true);
+            req.onreadystatechange = onClassListComplete;
+            req.send();
+        }
+        
+        //Set the list of classes
+        function onClassListComplete(){
+            if(req.readyState == 4){
+                if(req.status == 200){
+                    retVal = JSON.parse(req.responseText);
+                    
+                    if(retVal !== null){
+                        var ii;
+                        for (ii =0; ii < retVal.length ; ii ++)
+                        {
+                            classlist.options[ii]=new Option(retVal[ii]);
+                        }
+                        document.getElementById("classlist").value = charProperty.classes;
+                        classSelected = document.getElementById("classlist").value;
+                        maxLevel();
+                    }else{
+                        alert("Fail to get class list.")
+                    }
+                }else{
+                    alert("class list request fail");
+                }
+            }
+        }
+            
+        //====================================On Class change====================================
+        function onClassChange(){
+            classSelected = classlist.value;
+            
+            req = null;
+            req = new XMLHttpRequest();
+            req.open("POST", "../DnDBuilder/getClassInfo", true);
+            req.setRequestHeader("Content-type", "application/json");
+            req.onreadystatechange = onClassChangeComplete;
+            var msg = {classes:classSelected}
+            req.send(JSON.stringify(msg));
+        }
+        
+        function onClassChangeComplete(){
+            if(req.readyState == 4){
+                if(req.status == 200){
+                    retVal = JSON.parse(req.responseText);
+                    if(retVal.hasOwnProperty("error_Msg")){
+                        alert(retVal.error_Msg)
+                    }else{
+                        hitdie = retVal.hitdie;
+                        if(retVal.isSpellCaster){
+                            Spellcaster.value = "YES";
+                        }else{
+                            Spellcaster.value = "NO";
+                        }
+            
+                        //Complete initial proccess
+                        if(initStatus){
+                            setRacialBonus();
+                            initStatus = false;
+                        }else{
+                            setHP();
+                        }
+                    }
+                    
+                }else{
+                    alert("Fail to get Spell Caster");
+               }
+            }
+        }
+        
+        //===============================================MAX LEVEL=============================================
+        //get the max level
+        function maxLevel(){
+            req = null;
+            req = new XMLHttpRequest();
+            req.open("POST", "../DnDBuilder/getMaxLevel", true);
+            req.onreadystatechange = onMaxLevelComplete;
+            req.send();
+        }
+            
+        //Set the Max level
+        function onMaxLevelComplete(){
+            if(req.readyState == 4){
+                if(req.status == 200){
+                    retVal = JSON.parse(req.responseText);
+                    var ii;
+                    for (ii =0; ii < retVal ; ii ++)
+                    {
+                        level.options[ii]=new Option(ii +1);
+                    }
+                    document.getElementById("level").value = charProperty.level;
+                    levelNum = parseInt(document.getElementById("level").value);
+                    onClassChange();
+                }else{
+                    alert("Fail to get maximum level");
+                }
+            }
+        }
+            
+        //===============================================LEVEL Change=============================================
+        function levelChange(){
+            levelNum = parseInt(document.getElementById("level").value);
+            setHP();
+        }
+            
+        //===============================================Racial Bonus============================================
+        function setRacialBonus(){
+            raceSelected = document.getElementById("racelist").value;
+            
+            req = null;
+            req = new XMLHttpRequest();
+            req.open("POST", "../DnDBuilder/getRacialBonus", true);
+            req.setRequestHeader("Content-type", "application/json");
+            req.onreadystatechange = onRacialBonusComplete;
+            var msg = {races:raceSelected}
+            req.send(JSON.stringify(msg));
+        }
+            
+        function onRacialBonusComplete(){
+            if(req.readyState == 4){
+                if(req.status == 200){
+                    retVal = JSON.parse(req.responseText);
+                    if(retVal.hasOwnProperty("error_Msg")){
+                        alert(retVal.error_Msg)
+                    }else{
+                        var ii;
+                        for (ii =0; ii < 6 ; ii ++)
+                        { 
+                          var p = retVal.racialBonus[ii]
+                           document.getElementById(abType[ii]).value = p + userABPoint[ii];
+                           raceABPoint[ii] = p;
+                        }
+                        setHP();
+                    }
+                    
+                }else{
+                    alert("Fail to get Racial Bonus");
+                }
+            }
+        }
+            
+        //=============================================Ability Score=============================================
+        function incAB(index){
+            pointNum = parseInt(document.getElementById("point").value);
+            if(pointNum>0){
+                document.getElementById("point").value = pointNum -1;
+                userABPoint[index] += 1;
+                document.getElementById(abType[index]).value = raceABPoint[index] + userABPoint[index];
+                if(index === 0){
+                    setHP();
+                }
+            }
+        }
+        
+        function decAB(index){
+            if(userABPoint[index]>0){
+                userABPoint[index] -= 1;
+                document.getElementById("point").value = parseInt(document.getElementById("point").value)+1
+                document.getElementById(abType[index]).value = raceABPoint[index] + userABPoint[index];
+                if(index === 0){
+                    setHP();
+                }
+            }
+        }
+                
+        //===============================================Hit Point================================================
+        function setHP(){
+            hp =  levelNum * hitdie + raceABPoint[0] + userABPoint[0];
+            document.getElementById("charHP").value = ""+hp;
+        }
+            
+        //================================================Save Button===========================================
+        function saveHero(){
+            if(varify()){
+                buildMsg();
+                req = null;
+                req = new XMLHttpRequest();
+                req.open("POST", "../DnDBuilder/updateHero", true);
+                req.setRequestHeader("Content-type", "application/json");
+                req.onreadystatechange = onSaveComplete;
+                req.send(JSON.stringify(msg));
+            }
+            
+        }
+        function onSaveComplete(){
+            if(req.readyState == 4){
+                if(req.status == 200){
+                    retVal = JSON.parse(req.responseText);
+                    if(retVal === null){
+                        alert("Successfully svae the hero!")
+                    }else{
+                        alert(retVal);
+                    }
+                }else{
+                    alert("Fail to save hero");
+                }
+            }
+        }
+        //================================================Delete Button===========================================
+        function deleteHero(){
+            if(window.confirm("Do you really want to delete "+ charProperty.name+"?")){
+                req = null;
+                req = new XMLHttpRequest();
+                req.open("POST", "../DnDBuilder/deleteHero", true);
+                req.setRequestHeader("Content-type", "application/json");
+                req.onreadystatechange = ondeleteComplete;
+                var delMsg = {name:document.getElementById("charName").value}
+                req.send(JSON.stringify(delMsg));
+            }
+            
+        }
+        function ondeleteComplete(){
+            if(req.readyState == 4){
+                if(req.status == 200){
+                    retVal = JSON.parse(req.responseText);
+                    if(retVal === null){
+                        alert("Successfully delete the hero!")
+                        backToList();
+                    }else{
+                        alert(retVal);
+                    }
+                }else{
+                    alert("Fail to delete hero");
+                }
+            }
+        }
+        //================================================Download Button===========================================
+        function downloadHero(){
+            buildXML();
+            var blob = new Blob([xmlString], {type : 'text/xml'});
+            var link = document.createElement('a');
+            link.download = charProperty.name+".xml";
+            link.href = window.URL.createObjectURL(blob);
+            viewTable.appendChild(link);
+            link.click().then(function(){
+                viewTable.removeChild(link)
+                window.URL.revokeObjectURL(link.href);
+            });
+
+        }
+        
+        //=====================================build msg======================
+        function buildMsg(){
+            if(charGender === "Other"){
+                var gend = otherGend.value;
+            }else{
+                var gend = charGender.value;
+            }
+            
+            msg = { 
+                    name:charName.value,
+                    age:parseInt(charAge.value),
+                    gender:gend,
+                    bio:biography.value,
+                    races:raceSelected,
+                    classes:classSelected,
+                    level:levelNum,
+                    userAB:userABPoint
+                  }
+        }
+        //=====================================build XML file=================
+        function buildXML(){
+            if(charGender === "Other"){
+                var gend = otherGend.value;
+            }else{
+                var gend = charGender.value;
+            }
+            
+            var tagArray = ['name','age','gender','biography',
+                            'race','class','level','hp','spellcaster',
+                            'CON','DEX','STR','CHA','INT','WIS']   
+            var valueArray = [charProperty.name, charAge.value, gend,
+                              biography.value, racelist.value, classlist.value,
+                              level.value, charHP.value, Spellcaster.value,
+                              charCON.value, charDEX.value, charSTR.value, 
+                              charCHA.value, charINT.value, charWIS.value]
+            xmlString = "<Character>\n";
+            for(var ii =0; ii<tagArray.length; ii++){
+                xmlString = xmlString+"<"+tagArray[ii]+">";
+                xmlString = xmlString+valueArray[ii];
+                xmlString = xmlString+"</"+tagArray[ii]+">\n";
+            }
+            xmlString = xmlString+"</Character>";
+        }
+            
+        //==========================================================
+        function genderChange(){
+            var gend = document.getElementById("charGender").value;
+            if(gend === "Other"){
+                otherGend.disabled = false;
+            }else{
+                otherGend.disabled = true;
+            }
+        }
+            
+        //=======================back to list page=====================
+        function backToList(){
+            page = "/Client/HeroListPage.html";
+            window.location.assign(page);
+        }
+            
+        //=======================Varification==========================
+        function varify(){
+            var ageVal = parseInt(charAge.value)
+            if(isNaN(ageVal)){
+                alert("age should be a integer")
+                return false;
+            }else{
+                if((ageVal>500)||(ageVal<1)){
+                    alert("age should be between 1 and 500")
+                    return false;
+                }
+            }
+            return true;
+        }
+        </script>
+</head>
+<body onload="getCharInfo()">
+    <h1>View Hero</h1>
+        <button type="button" id="btn_back" onclick="backToList();">Back to List Page</button>
+            <form id="viewTable">
+            <br><br>
+            <a>Name: </a>
+            <input disabled = "true" type="text" id = "charName"/>
+            <br><br>
+            <a>Age(1-500):</a>
+            <input type="text" id = "charAge" maxlength="3" size="3"/>
+            
+            <a>&nbsp;&nbsp;Gender:</a>
+            <select type="text" id = "charGender" onchange="genderChange();">
+                <option>Male</option>
+                <option>Female</option>
+                <option>Other</option>
+            </select>
+            <input type="text" id="otherGend" disabled="true">
+            <br><br>
+            
+            <a>Biography:</a>
+            <br>
+            <textarea style="width: 450px; height: 100px; overflow-y: scroll;" maxlength="500" id="biography"></textarea>
+            <br><br>
+            
+           
+            <a>Race:</a>
+            <select id="racelist" onchange="setRacialBonus();"></select>
+            
+            <a>&nbsp;&nbsp;&nbsp;&nbsp;Class:</a>
+            <select id="classlist" onchange="onClassChange();"></select>
+            
+            
+            <a>&nbsp;&nbsp;&nbsp;&nbsp;Level:</a>
+            <select id="level" onchange="levelChange();"></select>
+            
+            <br><br>
+            
+            
+            <a>Hit Points:</a>
+            <input type="text" id = "charHP" disabled="true"/>
+            
+            
+            <a>&nbsp;&nbsp;Spellcaster:</a>
+            <input type="text" disabled="true" id = "Spellcaster"/>
+            
+            <br><br>
+            
+            <a>Ability Scores:</a>
+            <a>&nbsp;&nbsp;point:</a>
+            <input type="text" disabled="true" id = "point" style="width: 20px;" />
+            <br>
+            <a>CON: </a>
+            <button type="button" onclick="decAB(0);">-</button>
+            <input type="text" disabled="true" id = "charCON" style="width: 20px;"/>
+            <button type="button" onclick="incAB(0);">+</button>
+            <br>
+            <a>DEX: </a>
+            <button type="button" onclick="decAB(1);">-</button>
+            <input type="text" disabled="true" id = "charDEX" style="width: 20px;"/>
+            <button type="button" onclick="incAB(1);">+</button>
+            <br>
+            <a>STR: </a>
+            <button type="button" onclick="decAB(2);">-</button>
+            <input type="text" disabled="true" id = "charSTR" style="width: 20px;"/>
+            <button type="button" onclick="incAB(2);">+</button>
+            <br>
+            <a>CHA: </a>
+            <button type="button" onclick="decAB(3);">-</button>
+            <input type="text" disabled="true" id = "charCHA" style="width: 20px;"/>
+            <button type="button" onclick="incAB(3);">+</button>
+            <br>
+            <a>INT: </a>
+            <button type="button" onclick="decAB(4);">-</button>
+            <input type="text" disabled="true" id = "charINT" style="width: 20px;"/>
+            <button type="button" onclick="incAB(4);">+</button>
+            <br>
+            <a>WIS: </a>
+            <button type="button" onclick="decAB(5);">-</button>
+            <input type="text" disabled="true" id = "charWIS" style="width: 20px;"/>
+            <button type="button" onclick="incAB(5);">+</button>
+            
+            <br>
+            <button type="button" id="btn_save" onclick="saveHero();">Save</button>
+            <button type="button" id="btn_delete" onclick="deleteHero();">Delete</button>
+            <button type="button" id="btn_download" onclick="downloadHero();">Download</button>
+          </form>  
+</body>
+</html>

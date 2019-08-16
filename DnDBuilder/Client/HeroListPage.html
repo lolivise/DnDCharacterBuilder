@@ -1,0 +1,68 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <title></title>
+        <script language="JavaScript" type="text/JavaScript">
+            
+        function init(){
+            getCharList();
+        }
+            
+        function getCharList(){
+            req = null;
+            req = new XMLHttpRequest();
+            req.open("POST", "../DnDBuilder/getBriefList", true);
+            req.onreadystatechange = onCharListComplete;
+            req.send();
+        }
+        
+        function onCharListComplete(){
+            if(req.readyState == 4){
+                if(req.status == 200){
+                    retVal = JSON.parse(req.responseText);
+                    for(var i = 0; i < retVal.length; i++) {
+                        var obj = retVal[i];
+                        if(obj.hasOwnProperty("error_Msg")){
+                            alert(obj.error_Msg);
+                        }else{
+                            var txtarea = document.createElement("textarea");
+                            txtarea.value = "Name: "+obj.name+"\n"
+                                        +"Race: "+obj.races
+                                        +", Class: "+obj.classes
+                                        +", Lv: "+obj.level;
+                            txtarea.id = obj.name;
+                            txtarea.style.width = "300px";
+                            txtarea.style.height = "40px";
+                            txtarea.readonly;
+                            txtarea.onclick = function () {
+                                localStorage.setItem('name', this.id);
+                                window.location.assign("/Client/ViewHeroPage.html");
+                            };
+                            document.getElementById("charList").appendChild(txtarea);
+                        }
+                        
+                    }
+                    
+                }else{
+                    alert("Fail to get race list");
+                }
+            }
+        }
+            
+        function createHero(){
+            page = "/Client/CreateHeroPage.html";
+            window.location.assign(page);
+        }
+        </script>
+</head>
+<body onload="init();">
+    <h1>DnD Builder</h1>
+    <h2>Character</h2>
+        <div id="charList" style="width: 350px; height: 200px; overflow-y: scroll;">
+            
+        </div>
+    
+    <button type="button" id="btn_New" onclick="createHero();">Create a new</button>
+</body>
+</html>

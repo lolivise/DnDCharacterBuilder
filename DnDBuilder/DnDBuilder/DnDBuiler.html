@@ -1,0 +1,41 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <title></title>
+        <script language="JavaScript" type="text/JavaScript">
+        function init(){
+            
+            // global variable for storing maximum width and height
+            maxX = 0;
+            maxY = 0;
+            
+            // A XMLHttpRequest to get maximum zoom level
+            req = null;
+            req = new XMLHttpRequest();
+            req.open("POST", "../NewWeb/MaxZoom", true);
+            req.onreadystatechange = onZoomComplete;
+            req.send(null);
+          
+        }
+            
+        // get the maximum zoom level and set the zoom level
+        function onZoomComplete(){
+            if(req.readyState == 4){
+                if(req.status == 200){
+                    retVal = JSON.parse(req.responseText);
+                    var ii;
+                }else{
+                    alert("Fail to get maximum zoom level");
+                }
+            }
+        
+        }
+    </script>
+</head>
+<body>
+    <input type="text" id="name"/>
+        <br>
+    <input type="text" id="url"/>
+</body>
+</html>
